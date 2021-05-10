@@ -4,13 +4,13 @@ let backgroundColor = 0;
 //Posiciones, dimensiones y velocidad del jugador
 let padX = 100,pad2X=0, padY =0 , padW = 30, padH = 200, padSpeed = 25, pad2Speed = 5
 //dimensiones de la pelota y velocidad
-let ballD = 50, ballSpeedX =15, ballSpeedY = 10
+let ballD = 50, ballSpeedX = 15, ballSpeedY = 10
 //puntos
 let  offset = 250,pointsY=100,pointsP1 = 0, pointsP2 = 0,txtSize = 40
 //Opciones
-let isPlayer = true, Player1Name = "Player1", player2Name = "Player2"
+let isPlayer = true, Player1Name = "Player1", player2Name = "Player2", noPlayers = false,option = 1;
 //Menu
-let pvpColor = [11, 230, 44], pvcColor =255, activo = true,instrunctionsActive = true;
+let pvpColor = [11, 230, 44], pvcColor =255,cVcColor = 255, activo = true,instrunctionsActive = true;
 function setup(){
     createCanvas(windowWidth-5,windowHeight-5);
     pad2X = width-(padX+padW)
@@ -35,17 +35,39 @@ function movePlayers(){
 }
 
 function keyPressed(){
-    console.log(keyCode)
     if(activo){
         if(keyCode == UP_ARROW){
-            isPlayer = true;
-            pvpColor = [11, 230, 44]
-            pvcColor = 255;
+            if(option > 1)
+                option--;
         }
         if(keyCode == DOWN_ARROW){
-            isPlayer = false;
-            pvcColor = [11, 230, 44]
-            pvpColor = 255;
+            if(option < 3)
+                option++;
+        }
+        switch(option){
+            case 1:
+                isPlayer = true;
+                pvpColor = [11, 230, 44]
+                pvcColor = 255;
+                cVcColor = 255;
+                break;
+            case 2:
+                isPlayer = false;
+                pvcColor = [11, 230, 44]
+                pvpColor = 255;
+                cVcColor = 255;
+                break;
+            case 3:
+                noPlayers = true;
+                cVcColor = [11, 230, 44];
+                pvpColor = 255;
+                pvcColor = 255;
+                player1.speed = pad2Speed;
+                ball.speedX = 20;
+                ball.speedY = 15;
+            break;
+            default:
+            break;
         }
         if(keyCode === 13)
             activo = false;
@@ -67,9 +89,11 @@ function menu(){
         text("Player vs Player",width/2,(height/2))
         fill(pvcColor)
         text("Player vs Computadora",width/2,(height/2)+80)
+        fill(cVcColor)
+        text("Computadora vs Computadora",width/2,(height/2)+160)
         fill(255)
         textSize(22)
-        text("Presione ENTER para empezar",width/2,(height/2)+122)
+        text("Presione ENTER para empezar",width/2,(height/2)+200)
         textSize(12)
         text("Programador: Rubén J. Sandoval",width-100,height-12)
     pop()
@@ -94,11 +118,25 @@ function instructions(){
 }
 
 function computerPlays(){
-    if(ball.speedX > 0)
+    if(ball.speedX > 0){
         if(player2.y > ball.y)
             player2.move(true)
         else
             player2.move(false)
+ 
+    }else {
+        if(noPlayers)
+            if(player1.y > ball.y)
+                player1.move(true)
+            else
+                player1.move(false)
+    }
+    if(noPlayers){
+        if(ball.speedX < 50)
+            ball.speedX+=ball.speedX/10000;
+        if(ball.speedY < 35)
+            ball.speedY+=ball.speedY/10000;
+    }
 }
 
 function score(){
@@ -128,8 +166,16 @@ function points(winner){
     }
 }
 function addComputerSpeed(){
-    if(player2.speed < 15)
+    if(player2.speed < 15 && !noPlayers)
         player2.speed+=0.5;
+    else{
+        if(player2.speed < 30)
+            player2.speed+=0.5;
+         if(player1.speed < 30)
+            player1.speed+=0.5;
+    }
+
+    
 }
 function play(){
     score()
@@ -139,20 +185,22 @@ function play(){
     points(ball.move())
     player1.display()
     player2.display()
-    movePlayers()
+    if(!noPlayers)
+        movePlayers()
     if(!isPlayer)
         computerPlays()
     else
         player2.speed = player1.speed;
 }
 function draw(){
+    console.log(ball.speedX)
     background(backgroundColor)
     backgroundColor = 0;
     strokeWeight(3)
     if(activo)
         menu();
     else
-        if(instrunctionsActive)
+        if(instrunctionsActive && !noPlayers)
             instructions()
         else
             play()
