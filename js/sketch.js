@@ -132,9 +132,9 @@ function computerPlays(){
                 player1.move(false)
     }
     if(noPlayers){
-        if(ball.speedX < 50)
+        if(ball.speedX < 40)
             ball.speedX+=ball.speedX/10000;
-        if(ball.speedY < 35)
+        if(ball.speedY < 30)
             ball.speedY+=ball.speedY/10000;
     }
 }
@@ -166,7 +166,7 @@ function points(winner){
     }
 }
 function addComputerSpeed(){
-    if(player2.speed < 15 && !noPlayers)
+    if(player2.speed < 30 && !noPlayers)
         player2.speed+=0.5;
     else{
         if(player2.speed < 30)
