@@ -166,12 +166,12 @@ function points(winner){
     }
 }
 function addComputerSpeed(){
-    if(player2.speed < 30 && !noPlayers)
+    if(player2.speed < 15 && !noPlayers)
         player2.speed+=0.5;
     else{
-        if(player2.speed < 30)
+        if(player2.speed < 38)
             player2.speed+=0.5;
-         if(player1.speed < 30)
+         if(player1.speed < 40)
             player1.speed+=0.5;
     }
 
